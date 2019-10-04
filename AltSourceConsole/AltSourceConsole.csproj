@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Tony Thompson</Authors>
+    <Company>Tony Thompson</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AltSourceCore\AltSourceCore.csproj" />
+  </ItemGroup>
+
+</Project>

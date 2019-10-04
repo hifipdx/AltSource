@@ -1,0 +1,88 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETCoreApp,Version=v3.0": {
+      "AltSourceCore/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "compile": {
+          "bin/placeholder/AltSourceCore.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AltSourceCore.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AltSourceCore/1.0.0": {
+      "type": "project",
+      "path": "../AltSourceCore/AltSourceCore.csproj",
+      "msbuildProject": "../AltSourceCore/AltSourceCore.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETCoreApp,Version=v3.0": [
+      "AltSourceCore >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Tony\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\Tony\\source\\repos\\AltSource\\AltSourceConsole\\AltSourceConsole.csproj",
+      "projectName": "AltSourceConsole",
+      "projectPath": "C:\\Users\\Tony\\source\\repos\\AltSource\\AltSourceConsole\\AltSourceConsole.csproj",
+      "packagesPath": "C:\\Users\\Tony\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Tony\\source\\repos\\AltSource\\AltSourceConsole\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Tony\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "netcoreapp3.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "projectReferences": {
+            "C:\\Users\\Tony\\source\\repos\\AltSource\\AltSourceCore\\AltSourceCore.csproj": {
+              "projectPath": "C:\\Users\\Tony\\source\\repos\\AltSource\\AltSourceCore\\AltSourceCore.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netcoreapp3.0": {
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

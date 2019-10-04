@@ -1,0 +1,308 @@
+﻿<div ng-controller="ledger" ng-cloak>
+
+    <div ng-show="isRegistered && !isLoggedIn">
+        <h2>Log In</h2>
+        <form name="loginForm" novalidate>
+            <label>User ID:</label>
+            <input name="userIDBox" ng-model="userID" required />
+            <div ng-show="loginForm.$submitted || loginForm.$touched">
+                <div ng-show="loginForm.userIDBox.$error.required">User ID is required</div>
+            </div>
+            <br />
+            <label>Password:</label>
+            <input name="passwordBox" type="password" ng-model="password" required />
+            <div ng-show="loginForm.$submitted || loginForm.$touched">
+                <div ng-show="loginForm.passwordBox.$error.required">Password is required</div>
+            </div>
+            <br />
+            <input type="submit" value="Log In" ng-click="loginForm.$valid && logIn()" />
+        </form>
+
+    </div>
+
+    <div ng-show="!isRegistered">
+        <h2>Register New User</h2>
+        <form name="registerForm" novalidate>
+            <label>User ID:</label>
+            <input name="userIDBox" ng-model="newUserID" required />
+            <div ng-show="registerForm.$submitted || registerForm.$touched">
+                <div ng-show="registerForm.userIDBox.$error.required">User ID is required</div>
+            </div>
+            <br />
+            <label>Password:</label>
+            <input name="passwordBox" type="password" ng-model="newPassword" required />
+            <div ng-show="registerForm.$submitted || registerForm.$touched">
+                <div ng-show="registerForm.passwordBox.$error.required">Password is required</div>
+            </div>
+            <br />
+            <input type="submit" value="Register" ng-click="registerForm.$valid && register()" />
+        </form>
+    </div>
+
+    <div ng-show="isLoggedIn && displayMode==0">
+        <h2>Main Menu</h2>
+        <a href="#1" ng-click="addAccount()">Create an Account</a>
+        <br />
+        <a href="#1" ng-click="addTransaction()">Record a Deposit or Withdrawal</a>
+        <br />
+        <a href="#1" ng-click="viewBalance()">View Account Balance</a>
+        <br />
+        <a href="#1" ng-click="viewTransactions()">View Transaction History</a>
+        <br />
+        <a href="#1" ng-click="logOut()">Log Out</a>
+    </div>
+
+    <div ng-show="isLoggedIn && displayMode==1">
+        <h2>Create Account</h2>
+        <form name="createAccountForm" novalidate>
+            <label>Account name:</label>
+            <input name="accountNameBox" ng-model="account.Name" required />
+            <div ng-show="createAccountForm.$submitted || createAccountForm.$touched">
+                <div ng-show="createAccountForm.accountNameBox.$error.required">Account name is required</div>
+            </div>
+            <br />
+            <input type="submit" value="Create" ng-click="registerForm.$valid && createAccount()" />
+        </form>
+        <br />
+        <input type="button" value="Cancel" ng-click="changeDisplayMode(0)" />
+    </div>
+
+    <div ng-show="isLoggedIn && displayMode==2">
+        <h2>Record a Deposit or Withdrawal</h2>
+        <form name="recordDepositForm" novalidate>
+            <label>Account ID:</label>
+            <select name="accountIDselect" ng-model="transaction.AccountID" required convert-to-int>
+                <option ng-repeat="acct in accounts" value="{{acct.id}}">{{acct.id}} - {{acct.name}}</option>
+            </select>
+            <div ng-show="recordDepositForm.$submitted || recordDepositForm.$touched">
+                <div ng-show="recordDepositForm.accountIDselect.$error.required">Account ID is required</div>
+            </div>
+            <br />
+            <label>Transaction type:</label>
+            <span>
+                <input type="radio" value="0" ng-model="transaction.Type" convert-to-int />
+                Withdrawal
+            </span>
+            <span>
+                <input type="radio" value="1" ng-model="transaction.Type" convert-to-int />
+                Deposit
+            </span>
+            <br />
+            <label>Amount:</label>
+            <input type="number" name="amountbox" ng-model="transaction.Amount" required />
+            <div ng-show="recordDepositForm.$submitted || recordDepositForm.$touched">
+                <div ng-show="recordDepositForm.amountbox.$error.required">Amount is required</div>
+            </div>
+            <br />
+            <input type="submit" value="Submit" ng-click="recordDepositForm.$valid && processTransaction()" />
+        </form>
+        <br />
+        <input type="button" value="Cancel" ng-click="changeDisplayMode(0)" />
+    </div>
+
+    <div ng-show="isLoggedIn && displayMode==3">
+        <h2>View Account Balance</h2>
+
+    </div>
+
+    <div ng-show="isLoggedIn && displayMode==4">
+        <h2>View Transaction History</h2>
+        <form name="viewTransactionsForm" novalidate>
+            <label>Account ID:</label>
+            <select name="accountIDselect" ng-model="transaction.AccountID" required convert-to-int>
+                <option ng-repeat="acct in accounts" value="{{acct.id}}">{{acct.id}} - {{acct.name}}</option>
+            </select>
+            <div ng-show="viewTransactionsForm.$submitted || viewTransactionsForm.$touched">
+                <div ng-show="viewTransactionsForm.accountIDselect.$error.required">Account ID is required</div>
+            </div>
+            <br />
+            <div ng-show="txhistory != null && txhistory.length > 0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date/Time</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="tx in txhistory">
+                            <td>{{tx.ID}}</td>
+                            <td>{{tx.OccurredAt}}</td>
+                            <td>{{tx.Type}}</td>
+                            <td>{{tx.Amount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            <input type="submit" value="Submit" ng-click="viewTransactionsForm.$valid && getTransactions(transaction.AccountID)" />
+        </form>
+        <br />
+        <input type="button" value="Cancel" ng-click="changeDisplayMode(0)" />
+    </div>
+
+</div>
+
+<script src="~/js/angular.min.js"></script>
+<script src="~/js/angular-resource.min.js"></script>
+<script type="text/javascript">
+    "use strict";
+    var baseURL = window.location.href.toLowerCase();
+    var app = angular.module("root", ["ngResource"]);
+    app.controller("ledger", ["$scope", "$resource", "$http", function ($scope, $resource, $http) {
+            
+        $scope.isRegistered = false;
+        $scope.isLoggedIn = false;
+        $scope.newUserID = "";
+        $scope.newPassword = "";
+        $scope.userID = "";
+        $scope.password = "";
+        $scope.displayMode = 0;
+        $scope.accounts = [];
+        $scope.txhistory = [];
+        
+        var accounts = $resource(baseURL + 'api/accounts/:ID');
+        var accountsByOwner = $resource(baseURL + 'api/accounts/?ownerID=:ownerid');
+        var transactions = $resource(baseURL + 'api/transactions/:ID');
+        var transactionsByAccount = $resource(baseURL + 'api/transactions/?accountID=:accountid');
+
+        $scope.register = function () {
+            var url = baseURL + "api/register";
+            $http.post(url, { UserID: $scope.newUserID, Password: $scope.newPassword })
+                .then(function (response) {
+                    $scope.isRegistered = true;
+                    alert("User registered successfully");
+                })
+                .catch(function (error) {
+                    alert(error.data);
+                });
+        };
+
+        $scope.logIn = function () {
+            var url = baseURL + "api/login";
+            $http.post(url, { UserID: $scope.userID, Password: $scope.password })
+                .then(function (response) {
+                    $scope.isLoggedIn = true;
+                })
+                .catch(function (error) {
+                    alert(error.data);
+                });
+        };
+
+        $scope.changeDisplayMode = function(newMode) {
+            $scope.displayMode = newMode;
+        };
+
+        $scope.addAccount = function () {
+            $scope.getAccount(0);
+            $scope.changeDisplayMode(1);
+        };
+
+        $scope.getAccount = function (id) {
+            $scope.account = accounts.get({ ID: id },
+                function (success) {
+                    console.log("getAccount successful");
+                },
+                function (error) {
+                    console.log("getAccount error: " + error.data);
+                });
+        };
+
+        $scope.createAccount = function () {
+            $scope.account.OwnerUserID = $scope.userID;
+            var response = $scope.account.$save({},
+                function (success) {
+                    console.log("createAccount successful");
+                    alert("Account created successfully");
+                    $scope.changeDisplayMode(0);
+                },
+                function (error) {
+                    console.log("createAccount error: " + error.data);
+                });
+        };
+
+        $scope.getAccounts = function (ownerID) {
+            var response = accountsByOwner.query({ ownerid: ownerID },
+                function (success) {
+                    console.log("getAccounts successful");
+                },
+                function (error) {
+                    console.log("getAccounts error: " + error.data);
+                });
+            $scope.accounts = response;
+        };
+
+        $scope.addTransaction = function () {
+            $scope.getAccounts($scope.userID);
+            $scope.getTransaction(0);
+            $scope.changeDisplayMode(2);
+        };
+
+        $scope.getTransaction = function (id) {
+            $scope.transaction = transactions.get({ ID: id },
+                function (success) {
+                    console.log("getTransaction successful");
+                },
+                function (error) {
+                    console.log("getTransaction error: " + error.data);
+                });
+        };
+
+        $scope.processTransaction = function () {
+            var response = $scope.transaction.$save({},
+                function (success) {
+                    console.log("processTransaction successful");
+                    alert("Transaction posted successfully");
+                    $scope.changeDisplayMode(0);
+                },
+                function (error) {
+                    console.log("processDeposit error: " + error.data);
+                });
+        };
+
+        $scope.viewBalance = function () {
+            $scope.getAccounts($scope.userID);
+            $scope.changeDisplayMode(3);
+        };
+
+        $scope.viewTransactions = function () {
+            $scope.getAccounts($scope.userID);
+            $scope.changeDisplayMode(4);
+        };
+
+        $scope.getTransactions = function (accountID) {
+            var response = transactionsByAccount.query({ accountid: accountID },
+                function (success) {
+                    console.log("getTransactions successful");
+                },
+                function (error) {
+                    console.log("getTransactions error: " + error.data);
+                });
+            $scope.txhistory = response;
+        };
+
+        $scope.logOut = function () {
+            $scope.isLoggedIn = false;
+            $scope.userID = "";
+            $scope.password = "";
+        };
+
+     }]);
+
+    app.directive("convertToInt", function () {
+        return {
+            require: "ngModel",
+            link: function (scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function (val) {
+                    return parseInt(val, 10);
+                });
+                ngModel.$formatters.push(function (val) {
+                    return "" + val;
+                });
+            }
+        };
+    });
+
+</script>
